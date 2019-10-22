@@ -13,7 +13,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-@Profile("jpaservice")
 public class PlayerJpaService implements PlayerService {
 
     private static final int K = 32;

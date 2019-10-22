@@ -10,7 +10,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Service
-@Profile("jpaservice")
 public class ArchDataJpaService implements ArchDataService {
 
     private final ArchDataRepository archDataRepository;

@@ -11,7 +11,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Service
-@Profile("jpaservice")
 public class MatchJpaService implements MatchService {
 
     @Autowired
