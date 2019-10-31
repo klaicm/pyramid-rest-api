@@ -26,4 +26,9 @@ public class MatchController {
         matchJpaService.save(match);
     }
 
+    @RequestMapping(value =  "/importFile/{fileName}")
+    public void saveMatchesByExcel(@PathVariable("fileName") String fileName) {
+        matchJpaService.importXlsxFile(fileName);
+    }
+
 }
