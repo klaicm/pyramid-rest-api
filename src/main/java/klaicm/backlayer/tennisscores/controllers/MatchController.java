@@ -3,7 +3,6 @@ package klaicm.backlayer.tennisscores.controllers;
 import klaicm.backlayer.tennisscores.model.Match;
 import klaicm.backlayer.tennisscores.services.jpadata.MatchJpaService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
@@ -16,9 +15,8 @@ public class MatchController {
 
     @GetMapping("/allMatches")
     public Set<Match> listMatches() {
-        Set<Match> allMatches = matchJpaService.findAll();
 
-        return allMatches;
+        return matchJpaService.findAll();
     }
 
     @PostMapping(path = "/saveMatch", consumes = "application/json", produces = "application/json")

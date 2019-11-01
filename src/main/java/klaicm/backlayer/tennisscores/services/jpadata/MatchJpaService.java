@@ -7,14 +7,13 @@ import klaicm.backlayer.tennisscores.services.MatchService;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.time.LocalDate;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -67,16 +66,18 @@ public class MatchJpaService implements MatchService {
         return matchRepository.getPlayerMatches(id);
     }
 
-    @Autowired
-    MatchJpaService matchJpaService;
-
+    /**
+     * Method for importing .xlsx file with match data and saving them in database.
+     * This method of saving matches is used when match data is scrapped from 2Bagels.com
+     * For now, file must be on local machine and have specific path.
+     *
+     * @param fileName Name of the file in local machine (only name, without path and file extension f.e. .xlsx)
+     */
     public void importXlsxFile(String fileName) {
-        String FILE_NAME = "D:/" + fileName + ".xlsx";
+        String FILE_NAME = "D:/Workspaces/prince_matches/results/" + fileName + ".xlsx";
         Set<Player> allPlayers = playerJpaService.findAll();
 
-
         try {
-
             FileInputStream excelFile = new FileInputStream(new File(FILE_NAME));
             Workbook workbook = new XSSFWorkbook(excelFile);
             Sheet datatypeSheet = workbook.getSheetAt(0);
@@ -84,93 +85,133 @@ public class MatchJpaService implements MatchService {
             int set = 0;
             int rowIndex = 0;
             String result = "";
-
             Player playerW = new Player();
             Player playerL = new Player();
+            Date matchDate = new Date();
+            boolean isDateRow = true;
 
             while (iterator.hasNext()) {
-
                 rowIndex++;
                 int cellIndex = 0;
                 Row currentRow = iterator.next();
-                Iterator<Cell> cellIterator = currentRow.iterator();
-                while(cellIterator.hasNext()) {
+                for (Cell cell : currentRow) {
                     cellIndex++;
-                    Cell currentCell = cellIterator.next();
-                    if (currentCell.getCellType() == CellType.STRING) {
-                        set = 1; // kreće brojanje setova
+                    // If cell is string there are two possibilities -> date or name
+                    if (cell.getCellType() == CellType.STRING) {
+                        set = 1; // Reset counting set number
                         if (cellIndex == 1) {
                             if (rowIndex == 1) {
-                                for (Player player : allPlayers) {
-                                    if (currentCell.getStringCellValue().equalsIgnoreCase((player.getFirstName() + " " + player.getLastName()))) {
-                                        playerW = player;
-                                        System.out.println("playerW = " + player);
-                                        break;
-                                    } else {
-                                        playerW = null;
-                                    }
+                                // First row in excel file is always date
+                                try {
+                                    matchDate = new SimpleDateFormat("dd.MM.yyyy").parse(cell.getStringCellValue().substring(0, 10) + ".");
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
                                 }
                             } else {
-                                Match match = new Match();
-                                System.out.println("---------Setiranje meča.---------");
-                                System.out.println("playerW = " + playerW.getFirstName() + " " + playerW.getLastName());
-                                System.out.println("playerL = " + playerL.getFirstName() + " " + playerL.getLastName());
-                                System.out.println("result = " + result);
-                                match.setPlayerW(playerW);
-                                match.setPlayerL(playerL);
-                                match.setResult(result);
-                                System.out.println("-------Kraj setiranja meča-----");
-
-                                matchJpaService.save(match);
-
-                                result = "";
-                                for (Player player : allPlayers) {
-                                    if (currentCell.getStringCellValue().equalsIgnoreCase((player.getFirstName() + " " + player.getLastName()))) {
-                                        playerW = player;
-                                        break;
+                                if (isDateRow) {
+                                    try {
+                                        if (cell.getStringCellValue().length() >= 10) {
+                                            matchDate = new SimpleDateFormat("dd.MM.yyyy").parse(cell.getStringCellValue().substring(0, 10) + ".");
+                                        }
+                                    } catch (ParseException ex) {
+                                        ex.printStackTrace();
+                                    }
+                                } else {
+                                    // Second row in excel file are always players
+                                    if (rowIndex == 2) {
+                                        for (Player player : allPlayers) {
+                                            if (cell.getStringCellValue().equalsIgnoreCase((player.getFirstName() + " " + player.getLastName()))) {
+                                                playerW = player;
+                                                break;
+                                            } else {
+                                                playerW = null;
+                                            }
+                                        }
                                     } else {
-                                        playerW = null;
+                                        // Save match and start from next two players. Date is already set in upper logic
+                                        saveMatch(playerW, playerL, result, matchDate);
+
+                                        result = "";
+                                        for (Player player : allPlayers) {
+                                            if (cell.getStringCellValue().equalsIgnoreCase((player.getFirstName() + " " + player.getLastName()))) {
+                                                playerW = player;
+                                                break;
+                                            } else {
+                                                playerW = null;
+                                            }
+                                        }
                                     }
                                 }
-
                             }
                         } else {
-                            for (Player player : allPlayers) {
-                                if (currentCell.getStringCellValue().equalsIgnoreCase((player.getFirstName() + " " + player.getLastName()))) {
-                                    playerL = player;
-                                    break;
-                                } else {
-                                    playerL = null;
+                            if (isDateRow) {
+                                try {
+                                    if (cell.getStringCellValue().length() >= 10) {
+                                        matchDate = new SimpleDateFormat("dd.MM.yyyy").parse(cell.getStringCellValue().substring(0, 10) + ".");
+                                        isDateRow = false;
+                                    }
+                                } catch (ParseException ex) {
+                                    ex.printStackTrace();
+                                }
+                            } else {
+                                for (Player player : allPlayers) {
+                                    if (cell.getStringCellValue().equalsIgnoreCase((player.getFirstName() + " " + player.getLastName()))) {
+                                        playerL = player;
+                                        break;
+                                    } else {
+                                        playerL = null;
+                                    }
                                 }
                             }
                         }
-                    } else if (currentCell.getCellType() == CellType.NUMERIC) {
+                    } else if (cell.getCellType() == CellType.NUMERIC) {
                         if (cellIndex == 1 && set == 1) {
-                            result = result.concat((Integer.toString((int) currentCell.getNumericCellValue())));
+                            result = result.concat((Integer.toString((int) cell.getNumericCellValue())));
                         } else if (cellIndex == 2 && set == 1) {
-                            result = result.concat(":" + (Integer.toString((int) currentCell.getNumericCellValue())));
+                            result = result.concat(":" + ((int) cell.getNumericCellValue()));
                             set++;
+                            isDateRow = true;
                         } else if (cellIndex == 1 && set == 2) {
-                            result = result.concat(" " + (Integer.toString((int) currentCell.getNumericCellValue())));
+                            result = result.concat(" " + ((int) cell.getNumericCellValue()));
                         } else if (cellIndex == 2 && set == 2) {
-                            result = result.concat(":" + (Integer.toString((int) currentCell.getNumericCellValue())));
+                            result = result.concat(":" + ((int) cell.getNumericCellValue()));
                             set++;
+                            isDateRow = true;
                         } else if (cellIndex == 1 && set == 3) {
-                            result = result.concat(" " + (Integer.toString((int) currentCell.getNumericCellValue())));
+                            result = result.concat(" " + ((int) cell.getNumericCellValue()));
                         } else if (cellIndex == 2 && set == 3) {
-                            result = result.concat(":" + (Integer.toString((int) currentCell.getNumericCellValue())));
+                            result = result.concat(":" + ((int) cell.getNumericCellValue()));
                             set++;
+                            isDateRow = true;
                         }
                     }
                 }
             }
-            System.out.println("end");
+            saveMatch(playerW, playerL, result, matchDate);
 
-
-        } catch (FileNotFoundException e) {
+        } catch (
+                IOException e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();;
+        }
+    }
+
+    /**
+     * Method for final save of the match created from import of .xlsx file
+     *
+     * @param playerW   Player won
+     * @param playerL   Player lost
+     * @param result    Match result
+     * @param matchDate Match date
+     */
+    private void saveMatch(Player playerW, Player playerL, String result, Date matchDate) {
+        if (playerW != null && playerL != null) {
+            Match match = new Match();
+            match.setPlayerW(playerW);
+            match.setPlayerL(playerL);
+            match.setResult(result);
+            match.setDate(matchDate);
+
+            save(match);
         }
     }
 }

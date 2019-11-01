@@ -3,7 +3,6 @@ package klaicm.backlayer.tennisscores.model;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -16,7 +15,7 @@ public class ArchData extends BaseEntity {
     private Integer eloRating;
     private Integer winPercentage;
     private Integer position;
-    private LocalDate date;
+    private Date date;
     private Integer totalWins;
     private Integer totalLoses;
 
@@ -48,11 +47,11 @@ public class ArchData extends BaseEntity {
         this.position = position;
     }
 
-    public LocalDate getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 

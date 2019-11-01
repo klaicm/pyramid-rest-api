@@ -6,7 +6,6 @@ import klaicm.backlayer.tennisscores.model.Player;
 import klaicm.backlayer.tennisscores.repositories.PlayerRepository;
 import klaicm.backlayer.tennisscores.services.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -39,6 +38,7 @@ public class PlayerJpaService implements PlayerService {
     @Override
     public Player findById(Long id) {
         Player player = playerRepository.findById(id).orElse(null);
+        assert player != null;
         Set<ArchData> archData = archDataJpaService.getArchDataByPlayerId(player.getId());
 
         player.setArchData(archData);
@@ -62,6 +62,10 @@ public class PlayerJpaService implements PlayerService {
         playerRepository.deleteById(id);
     }
 
+    /**
+     * Updating player data after played match and saving previous data in archive data.
+     * @param match Match
+     */
     public void updatePlayer(Match match) {
 
         Player playerW = findById(match.getPlayerW().getId());
@@ -74,7 +78,7 @@ public class PlayerJpaService implements PlayerService {
         int raUpdated = (int) Math.round(playerW.getElo() + K*(1 - probabilityMap.get("ea")));
         int rbUpdated = (int) Math.round(playerL.getElo() + K*(0 - probabilityMap.get("eb")));
 
-        if (match.getResult().length() == 7) {
+        if (match.getResult().length() <= 7) {
             playerW.setWinsInTwo(playerW.getWinsInTwo() + 1);
             playerW.setPoints(playerW.getPoints() + 3);
             playerL.setLosesInTwo(playerL.getLosesInTwo() + 1);
@@ -100,8 +104,14 @@ public class PlayerJpaService implements PlayerService {
         archDataJpaService.save(playerLArch);
     }
 
+    /**
+     * Calculation of probability of win needed for ELO rating calculation.
+     * @param playerAElo Player A
+     * @param playerBElo Player B
+     * @return Map<String, Double>
+     */
     public Map<String, Double> calculateProbabilityOfWin(Integer playerAElo, Integer playerBElo) {
-        Map<String, Double> probabilityMap = new HashMap<String, Double>();
+        Map<String, Double> probabilityMap = new HashMap<>();
 
         double ra = playerAElo;
         double rb = playerBElo;
@@ -114,6 +124,14 @@ public class PlayerJpaService implements PlayerService {
         return probabilityMap;
     }
 
+    /**
+     * Method for inserting data in arch table.
+     * @param player Player
+     * @param ratingUpdated Updated rating
+     * @param match Match
+     * @param isWinner Is player winner is defeated
+     * @return ArchData
+     */
     private ArchData insertArchData(Player player, int ratingUpdated, Match match, boolean isWinner) {
         ArchData playerArch = new ArchData();
         Set<Player> allPlayersSet = this.findAll();

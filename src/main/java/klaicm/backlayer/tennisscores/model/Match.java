@@ -1,8 +1,7 @@
 package klaicm.backlayer.tennisscores.model;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.util.Set;
+import java.util.Date;
 
 @Entity
 public class Match extends BaseEntity {
@@ -14,7 +13,7 @@ public class Match extends BaseEntity {
     private Player playerL;
 
     private String result;
-    private LocalDate date;
+    private Date date;
 
     public Player getPlayerW() {
         return playerW;
@@ -40,11 +39,11 @@ public class Match extends BaseEntity {
         this.result = result;
     }
 
-    public LocalDate getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
