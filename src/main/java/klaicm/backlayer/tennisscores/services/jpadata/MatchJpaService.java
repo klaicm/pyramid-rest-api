@@ -8,9 +8,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.io.File;
-import java.io.FileInputStream;
+import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -69,17 +67,14 @@ public class MatchJpaService implements MatchService {
     /**
      * Method for importing .xlsx file with match data and saving them in database.
      * This method of saving matches is used when match data is scrapped from 2Bagels.com
-     * For now, file must be on local machine and have specific path.
      *
-     * @param fileName Name of the file in local machine (only name, without path and file extension f.e. .xlsx)
+     * @param excelDataFile Uploaded file
      */
-    public void importXlsxFile(String fileName) {
-        String FILE_NAME = "D:/Workspaces/prince_matches/results/" + fileName + ".xlsx";
+    public void importXlsxFile(MultipartFile excelDataFile) {
         Set<Player> allPlayers = playerJpaService.findAll();
 
         try {
-            FileInputStream excelFile = new FileInputStream(new File(FILE_NAME));
-            Workbook workbook = new XSSFWorkbook(excelFile);
+            Workbook workbook = new XSSFWorkbook(excelDataFile.getInputStream());
             Sheet datatypeSheet = workbook.getSheetAt(0);
             Iterator<Row> iterator = datatypeSheet.iterator();
             int set = 0;

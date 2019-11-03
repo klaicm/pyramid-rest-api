@@ -3,7 +3,10 @@ package klaicm.backlayer.tennisscores.controllers;
 import klaicm.backlayer.tennisscores.model.Match;
 import klaicm.backlayer.tennisscores.services.jpadata.MatchJpaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Set;
 
@@ -24,9 +27,11 @@ public class MatchController {
         matchJpaService.save(match);
     }
 
-    @RequestMapping(value =  "/importFile/{fileName}")
-    public void saveMatchesByExcel(@PathVariable("fileName") String fileName) {
-        matchJpaService.importXlsxFile(fileName);
+    @PostMapping(value =  "/importFile")
+    public ResponseEntity<String> saveMatchesByExcel(@RequestParam("file") MultipartFile excelDataFile) {
+        matchJpaService.importXlsxFile(excelDataFile);
+
+        return new ResponseEntity<String>("Dokument " + excelDataFile.getOriginalFilename() + " učitan", HttpStatus.OK);
     }
 
 }
