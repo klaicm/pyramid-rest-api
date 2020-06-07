@@ -6,20 +6,20 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="tennis-scores-service" />
+        <module name="pyramid-service" />
         <module name="tennis-scores-web" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="pyramid-service" target="1.8" />
       <module name="tennis-scores-data" target="1.8" />
-      <module name="tennis-scores-service" target="1.8" />
       <module name="tennis-scores-web" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="pyramid-service" options="-parameters" />
       <module name="tennis-scores-data" options="-parameters" />
-      <module name="tennis-scores-service" options="-parameters" />
       <module name="tennis-scores-web" options="-parameters" />
     </option>
   </component>

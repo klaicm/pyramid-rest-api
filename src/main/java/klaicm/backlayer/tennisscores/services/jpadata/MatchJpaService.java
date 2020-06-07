@@ -19,9 +19,7 @@ public class MatchJpaService implements MatchService {
 
     private final MatchRepository matchRepository;
 
-    public MatchJpaService(MatchRepository matchRepository) {
-        this.matchRepository = matchRepository;
-    }
+    public MatchJpaService (MatchRepository matchRepository) { this.matchRepository = matchRepository; }
 
     @Override
     public Set<Match> findAll() {
@@ -31,14 +29,15 @@ public class MatchJpaService implements MatchService {
     }
 
     @Override
-    public Match findById(Long aLong) {
-        return matchRepository.findById(aLong).orElse(null);
+    public Match findById(Long id) {
+        return matchRepository.findById(id).orElse(null);
     }
 
     @Override
     public Match save(Match match) {
 
-        playerJpaService.updatePlayer(match);
+        // update player i update match je
+        // playerJpaService.updatePlayer(match);
 
         return matchRepository.save(match);
     }
@@ -54,7 +53,17 @@ public class MatchJpaService implements MatchService {
     }
 
     @Override
-    public Set<Match> getPlayerMatches(Long id) {
-        return matchRepository.getPlayerMatches(id);
+    public Set<Match> findMatchesByPlayerId(Long id) {
+        Set<Match> matches = new HashSet<>();
+        matchRepository.findMatchesByPlayerId(id).forEach(matches::add);
+        return matches;
     }
+
+    @Override
+    public Set<Match> findMatchesByRoundId(Long id) {
+        Set<Match> matches = new HashSet<>();
+        matchRepository.findMatchesByRoundId(id).forEach(matches::add);
+        return matches;
+    }
+
 }

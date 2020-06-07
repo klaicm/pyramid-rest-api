@@ -11,6 +11,9 @@ import java.util.Set;
 @Repository
 public interface MatchRepository extends CrudRepository<Match, Long> {
 
-    @Query("select m from Match m where m.playerW.id = :playerId or m.playerL.id = :playerId")
-    Set<Match> getPlayerMatches(@Param("playerId") Long playerId);
+    @Query(value = "select m.*, r.round_description from MATCH m join round r on r.id = m.round_id where PLAYER_ROW_ATTACKER_ID = :playerId or PLAYER_ROW_DEFENDER_ID = :playerId", nativeQuery = true)
+    Set<Match> findMatchesByPlayerId(@Param("playerId") Long playerId);
+
+    @Query(value = "select m.*, r.round_description from MATCH m join round r on r.id = m.round_id where r.id = :roundId", nativeQuery = true)
+    Set<Match> findMatchesByRoundId(@Param("roundId") Long roundId);
 }

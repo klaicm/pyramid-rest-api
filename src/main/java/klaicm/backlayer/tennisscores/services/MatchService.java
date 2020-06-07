@@ -6,5 +6,7 @@ import java.util.Set;
 
 public interface MatchService extends CrudService<Match, Long> {
 
-    Set<Match> getPlayerMatches(Long id);
+    Set<Match> findMatchesByPlayerId(Long id);
+
+    Set<Match> findMatchesByRoundId(Long id);
 }

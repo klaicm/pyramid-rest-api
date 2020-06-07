@@ -1,31 +1,30 @@
 package klaicm.backlayer.tennisscores.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Set;
 
 @Entity
+@Table(name = "player")
 public class Player extends BaseEntity {
 
     private String firstName;
     private String lastName;
-    private Integer points;
-    private Integer winsInTwo;
-    private Integer winsInTb;
-    private Integer losesInTwo;
-    private Integer losesInTb;
-    private Integer elo;
+    private LocalDate dateOfBirth;
+    private String userMail;
+    private String password;
+    private boolean isActive;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private Set<ArchData> archData;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "player")
+    private Set<PlayersAchievements> playerAchievements;
+
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "player")
+    private PlayerStats playerStats;
 
     @OneToMany(cascade = CascadeType.ALL)
     private Set<Match> matches;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "player")
-    private Set<Season> seasons;
-
-    @Lob
-    private Byte[] image;
 
     public String getFirstName() {
         return firstName;
@@ -43,83 +42,67 @@ public class Player extends BaseEntity {
         this.lastName = lastName;
     }
 
-    public Integer getPoints() {
-        return points;
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
     }
 
-    public void setPoints(Integer points) {
-        this.points = points;
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 
-    public Integer getWinsInTwo() {
-        return winsInTwo;
+    public String getUserMail() {
+        return userMail;
     }
 
-    public void setWinsInTwo(Integer winsInTwo) {
-        this.winsInTwo = winsInTwo;
+    public void setUserMail(String userMail) {
+        this.userMail = userMail;
     }
 
-    public Integer getWinsInTb() {
-        return winsInTb;
+    public String getPassword() {
+        return password;
     }
 
-    public void setWinsInTb(Integer winsInTb) {
-        this.winsInTb = winsInTb;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public Integer getLosesInTwo() {
-        return losesInTwo;
+    public Set<PlayersAchievements> getPlayerAchievements() {
+        return playerAchievements;
     }
 
-    public void setLosesInTwo(Integer losesInTwo) {
-        this.losesInTwo = losesInTwo;
+    public void setPlayerAchievements(Set<PlayersAchievements> playerAchievements) {
+        this.playerAchievements = playerAchievements;
     }
 
-    public Integer getLosesInTb() {
-        return losesInTb;
+    /*
+    public Set<Match> getMatches() {
+        return matches;
+    }
+    */
+
+    public void setMatches(Set<Match> matches) {
+        this.matches = matches;
     }
 
-    public void setLosesInTb(Integer losesInTb) {
-        this.losesInTb = losesInTb;
+    public PlayerStats getPlayerStats() {
+        return playerStats;
     }
 
-    public Integer getElo() {
-        return elo;
-    }
-
-    public void setElo(Integer elo) {
-        this.elo = elo;
-    }
-
-    public Set<ArchData> getArchData() {
-        return archData;
-    }
-
-    public void setArchData(Set<ArchData> archData) {
-        this.archData = archData;
+    public void setPlayerStats(PlayerStats playerStats) {
+        this.playerStats = playerStats;
     }
 
     public Set<Match> getMatches() {
         return matches;
     }
 
-    public void setMatches(Set<Match> matches) {
-        this.matches = matches;
+    public boolean isActive() {
+        return isActive;
     }
 
-    public Set<Season> getSeasons() {
-        return seasons;
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
-    public void setSeasons(Set<Season> seasons) {
-        this.seasons = seasons;
-    }
 
-    public Byte[] getImage() {
-        return image;
-    }
-
-    public void setImage(Byte[] image) {
-        this.image = image;
-    }
 }
