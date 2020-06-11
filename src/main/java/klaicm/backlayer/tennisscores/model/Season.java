@@ -13,6 +13,7 @@ public class Season extends BaseEntity {
 
     String seasonName;
     String seasonTier;
+    boolean isCurrentSeason;
 
     public Set<Round> getRounds() {
         return rounds;
@@ -36,5 +37,13 @@ public class Season extends BaseEntity {
 
     public void setSeasonTier(String seasonTier) {
         this.seasonTier = seasonTier;
+    }
+
+    public boolean isCurrentSeason() {
+        return isCurrentSeason;
+    }
+
+    public void setCurrentSeason(boolean currentSeason) {
+        isCurrentSeason = currentSeason;
     }
 }

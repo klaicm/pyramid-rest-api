@@ -40,7 +40,7 @@ public class PlayerJpaService implements PlayerService {
     @Override
     public void delete(Player player) {
 
-        player.setActive(false);
+        player.setIsActive(player.isActive());
 
         // potrebno obrisati i red piramide? Najbolje da...
         playerRepository.save(player);

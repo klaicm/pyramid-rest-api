@@ -31,11 +31,11 @@ public class Round extends BaseEntity {
         this.matches = matches;
     }
 
-    public Integer getRound() {
+    public Integer getRoundNumber() {
         return roundNumber;
     }
 
-    public void setRound(Integer roundNumber) {
+    public void setRoundNumber(Integer roundNumber) {
         this.roundNumber = roundNumber;
     }
 

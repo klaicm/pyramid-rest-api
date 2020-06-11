@@ -13,6 +13,7 @@ public class Player extends BaseEntity {
     private String firstName;
     private String lastName;
     private LocalDate dateOfBirth;
+    private String phoneNumber;
     private String userMail;
     private String password;
     private boolean isActive;
@@ -48,6 +49,14 @@ public class Player extends BaseEntity {
 
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public String getUserMail() {
@@ -100,8 +109,8 @@ public class Player extends BaseEntity {
         return isActive;
     }
 
-    public void setActive(boolean active) {
-        isActive = active;
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
     }
 
 

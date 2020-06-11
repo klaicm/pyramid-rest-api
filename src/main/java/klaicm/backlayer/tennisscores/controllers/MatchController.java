@@ -26,8 +26,13 @@ public class MatchController {
     }
 
     @PostMapping(path = "/saveMatch", consumes = "application/json", produces = "application/json")
-    public void savePlayer(@RequestBody Match match) {
+    public void saveMatch(@RequestBody Match match) {
         matchJpaService.save(match);
+    }
+
+    @PostMapping(path = "/deleteMatch", consumes = "application/json", produces = "application/json")
+    public void deleteMatch(@RequestBody Match match) {
+        matchJpaService.deleteById(match.getId());
     }
 
     @GetMapping("playerMatches/{id}")
