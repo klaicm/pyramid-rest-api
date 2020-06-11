@@ -3,10 +3,14 @@ package klaicm.backlayer.tennisscores.services.jpadata;
 import klaicm.backlayer.tennisscores.model.PlayerStats;
 import klaicm.backlayer.tennisscores.repositories.PlayerStatsRepository;
 import klaicm.backlayer.tennisscores.services.PlayerStatsService;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.Set;
 
+@Service
+@Profile("jpaservice")
 public class PlayerStatsJpaService implements PlayerStatsService {
 
     private final PlayerStatsRepository playerStatsRepository;
