@@ -39,6 +39,10 @@ public class MatchJpaService implements MatchService {
         return matchRepository.findById(id).orElse(null);
     }
 
+    public Match scheduleMatch(Match match) {
+        return matchRepository.save(match);
+    }
+
     @Override
     public Match save(Match match) {
 

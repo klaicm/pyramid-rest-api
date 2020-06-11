@@ -30,6 +30,11 @@ public class MatchController {
         matchJpaService.save(match);
     }
 
+    @PostMapping(path = "/scheduleMatch", consumes = "application/json", produces = "application/json")
+    public void scheduleMatch(@RequestBody Match match) {
+        matchJpaService.scheduleMatch(match);
+    }
+
     @PostMapping(path = "/deleteMatch", consumes = "application/json", produces = "application/json")
     public void deleteMatch(@RequestBody Match match) {
         matchJpaService.deleteById(match.getId());
