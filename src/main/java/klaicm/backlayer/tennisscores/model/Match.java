@@ -1,10 +1,7 @@
 package klaicm.backlayer.tennisscores.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.util.Set;
+import java.sql.Date;
 
 @Entity
 @Table(name = "match")
@@ -28,7 +25,7 @@ public class Match extends BaseEntity {
     String setSecond;
     String setThird;
     boolean isMatchPlayed;
-    LocalDate matchDate;
+    Date matchDate;
 
     @ManyToOne
     @JoinColumn(name = "round_id")
@@ -123,11 +120,11 @@ public class Match extends BaseEntity {
         isMatchPlayed = matchPlayed;
     }
 
-    public LocalDate getMatchDate() {
+    public Date getMatchDate() {
         return matchDate;
     }
 
-    public void setMatchDate(LocalDate matchDate) {
+    public void setMatchDate(Date matchDate) {
         this.matchDate = matchDate;
     }
 }

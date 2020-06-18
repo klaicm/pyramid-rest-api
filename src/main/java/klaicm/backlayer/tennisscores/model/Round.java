@@ -3,7 +3,7 @@ package klaicm.backlayer.tennisscores.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.sql.Date;
 import java.util.Set;
 
 @Entity
@@ -14,8 +14,8 @@ public class Round extends BaseEntity {
     Set<Match> matches;
 
     Integer roundNumber;
-    LocalDate dateFrom;
-    LocalDate dateTo;
+    Date dateFrom;
+    Date dateTo;
 
     String roundDescription;
 
@@ -39,19 +39,19 @@ public class Round extends BaseEntity {
         this.roundNumber = roundNumber;
     }
 
-    public LocalDate getDateFrom() {
+    public Date getDateFrom() {
         return dateFrom;
     }
 
-    public void setDateFrom(LocalDate dateFrom) {
+    public void setDateFrom(Date dateFrom) {
         this.dateFrom = dateFrom;
     }
 
-    public LocalDate getDateTo() {
+    public Date getDateTo() {
         return dateTo;
     }
 
-    public void setDateTo(LocalDate dateTo) {
+    public void setDateTo(Date dateTo) {
         this.dateTo = dateTo;
     }
 

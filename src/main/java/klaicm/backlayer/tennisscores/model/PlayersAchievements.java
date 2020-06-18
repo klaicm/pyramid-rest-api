@@ -3,7 +3,7 @@ package klaicm.backlayer.tennisscores.model;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import java.time.LocalDate;
+import java.sql.Date;
 
 @Entity
 public class PlayersAchievements extends BaseEntity {
@@ -16,7 +16,7 @@ public class PlayersAchievements extends BaseEntity {
     @JoinColumn(name = "achievement_id")
     Achievement achievement;
 
-    LocalDate dateAchieved;
+    Date dateAchieved;
 
     public void setPlayer(Player player) {
         this.player = player;
@@ -30,11 +30,11 @@ public class PlayersAchievements extends BaseEntity {
         this.achievement = achievement;
     }
 
-    public LocalDate getDateAchieved() {
+    public Date getDateAchieved() {
         return dateAchieved;
     }
 
-    public void setDateAchieved(LocalDate dateAchieved) {
+    public void setDateAchieved(Date dateAchieved) {
         this.dateAchieved = dateAchieved;
     }
 }

@@ -3,6 +3,7 @@ package klaicm.backlayer.tennisscores.controllers;
 import klaicm.backlayer.tennisscores.config.JwtTokenUtil;
 import klaicm.backlayer.tennisscores.model.JwtRequest;
 import klaicm.backlayer.tennisscores.model.JwtResponse;
+import klaicm.backlayer.tennisscores.model.UserDTO;
 import klaicm.backlayer.tennisscores.services.JwtUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +38,11 @@ public class JwtAuthenticationController {
         final String token = jwtTokenUtil.generateToken(userDetails);
 
         return ResponseEntity.ok(new JwtResponse(token));
+    }
+
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    public ResponseEntity<?> saveUser(@RequestBody UserDTO user) throws Exception {
+        return ResponseEntity.ok(userDetailsService.save(user));
     }
 
     private void authenticate(String username, String password) throws Exception {
