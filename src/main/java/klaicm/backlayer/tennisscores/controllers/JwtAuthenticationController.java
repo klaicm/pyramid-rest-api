@@ -1,18 +1,27 @@
 package klaicm.backlayer.tennisscores.controllers;
 
 import klaicm.backlayer.tennisscores.config.JwtTokenUtil;
+import klaicm.backlayer.tennisscores.model.DAOUser;
 import klaicm.backlayer.tennisscores.model.JwtRequest;
 import klaicm.backlayer.tennisscores.model.JwtResponse;
 import klaicm.backlayer.tennisscores.model.UserDTO;
 import klaicm.backlayer.tennisscores.services.JwtUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.util.Locale;
 
 @CrossOrigin
 @RestController
@@ -44,6 +53,7 @@ public class JwtAuthenticationController {
     public ResponseEntity<?> saveUser(@RequestBody UserDTO user) throws Exception {
         return ResponseEntity.ok(userDetailsService.save(user));
     }
+
 
     private void authenticate(String username, String password) throws Exception {
         try {

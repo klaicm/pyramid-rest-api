@@ -35,9 +35,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // We don't need CSRF for this example
         httpSecurity.csrf().disable()
                 // dont authenticate this particular request
-                .authorizeRequests().antMatchers("/authenticate", "/allRounds", "/allMatches", "/roundMatches/**").
-                permitAll().antMatchers(HttpMethod.OPTIONS, "/**")
-                .permitAll().
+                .authorizeRequests().antMatchers(
+                        "/authenticate", "/register", "/allRounds",
+                "/allMatches", "/allSeasons", "/roundMatches/**", "/player/**", "/search-player",
+                "/playerMatches/**", "/allPlayers", "/h2-console/**").permitAll().
+                antMatchers(HttpMethod.OPTIONS, "/**").permitAll().
                 // all other requests need to be authenticated
                         anyRequest().authenticated().and().
                 // make sure we use stateless session; session won't be used to
@@ -47,6 +49,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         // Add a filter to validate the tokens with every request
         httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+
+        // only for access to h2 console
+        httpSecurity.headers().frameOptions().disable();
     }
 
     @Autowired
