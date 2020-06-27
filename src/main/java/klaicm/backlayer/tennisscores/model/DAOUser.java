@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "user")
+@Table(name = "user_account")
 public class DAOUser extends BaseEntity {
 
     @Column
