@@ -31,9 +31,9 @@ public class PlayerController {
         PlayerStats playerStats = new PlayerStats();
         playerStats.setPlayer(player);
         playerStats.setCurrentRow(player.getPlayerStats().getCurrentRow());
-        // playerStats.setBestRow(player.getPlayerStats().getCurrentRow());
-        // playerStats.setBestStreak(player.getPlayerStats().getBestStreak());
-        // playerStats.setCurrentStreak(player.getPlayerStats().getCurrentStreak());
+        playerStats.setBestRow(player.getPlayerStats().getCurrentRow());
+        playerStats.setBestStreak(0);
+        playerStats.setCurrentStreak(0);
 
         player.setPlayerStats(playerStats);
 
