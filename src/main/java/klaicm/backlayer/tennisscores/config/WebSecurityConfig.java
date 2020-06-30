@@ -38,7 +38,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests().antMatchers(
                         "/authenticate", "/register", "/allRounds",
                 "/allMatches", "/allSeasons", "/roundMatches/**", "/player/**", "/search-player/**",
-                "/playerMatches/**", "/allPlayers/", "/h2-console/**").permitAll().
+                "/playerMatches/**", "/allPlayers", "/h2-console/**").permitAll().
                 antMatchers(HttpMethod.OPTIONS, "/**").permitAll().
                 // all other requests need to be authenticated
                         anyRequest().authenticated().and().
