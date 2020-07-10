@@ -78,8 +78,8 @@ public class MatchJpaService implements MatchService {
 
             // TROPHIES AND ACHIEVEMENTS
 
-            playerWinner.setPlayerAchievements(setNewAchievements(playerWinner));
-            playerDefeated.setPlayerAchievements(setNewAchievements(playerDefeated));
+            playerWinner.setPlayerAchievements(setNewAchievements(playerWinner, match));
+            playerDefeated.setPlayerAchievements(setNewAchievements(playerDefeated, match));
         }
 
         match.setPlayerWinner(playerWinner);
@@ -88,7 +88,7 @@ public class MatchJpaService implements MatchService {
         return matchRepository.save(match);
     }
 
-    private Set<PlayersAchievements> setNewAchievements (Player player) {
+    private Set<PlayersAchievements> setNewAchievements (Player player, Match currentMatch) {
 
         Set<Achievement> allAchievements = achievementJpaService.findAll();
         Set<PlayersAchievements> playersAchievements = player.getPlayerAchievements();
@@ -155,7 +155,32 @@ public class MatchJpaService implements MatchService {
             playersAchievements.add(playerAchievement);
         }
 
+        if (player.getPlayerStats().getCurrentStreak() == 10) {
+
+            for (Achievement achievement : allAchievements) {
+                if (achievement.getTrophyName().equals("tenStreak")) {
+                    playerAchievement.setAchievement(achievement);
+                    playerAchievement.setPlayer(player);
+                }
+            }
+
+            playersAchievements.add(playerAchievement);
+        }
+
         Set<Match> playerMatches = findMatchesByPlayerId((player.getId()));
+
+        // because after this saved match it will be 20
+        if (playerMatches.size() == 19) {
+
+            for (Achievement achievement : allAchievements) {
+                if (achievement.getTrophyName().equals("twentyPlayed")) {
+                    playerAchievement.setAchievement(achievement);
+                    playerAchievement.setPlayer(player);
+                }
+            }
+
+            playersAchievements.add(playerAchievement);
+        }
 
         // because after this saved match it will be 50
         if (playerMatches.size() == 49) {
@@ -173,10 +198,10 @@ public class MatchJpaService implements MatchService {
         if (!hasTrophy(playersAchievements, "tenWins")) {
             int i = 0;
             for (Match match : playerMatches) {
-                if (match.isMatchPlayed()) {
+                if (match.isMatchPlayed() && (match.getRound().getRoundNumber() != 0)) {
                     if (match.getPlayerWinner().getId().equals(player.getId()))
                         i++;
-                    if (i == 10) {
+                    if (i == 9) {
                         for (Achievement achievement : allAchievements) {
                             if (achievement.getTrophyName().equals("tenWins")) {
                                 playerAchievement.setAchievement(achievement);
@@ -191,10 +216,10 @@ public class MatchJpaService implements MatchService {
         if (!hasTrophy(playersAchievements, "twentyWins")) {
             int i = 0;
             for (Match match : playerMatches) {
-                if (match.isMatchPlayed()) {
+                if (match.isMatchPlayed() && (match.getRound().getRoundNumber() != 0)) {
                     if (match.getPlayerWinner().getId().equals(player.getId()))
                         i++;
-                    if (i == 20) {
+                    if (i == 19) {
                         for (Achievement achievement : allAchievements) {
                             if (achievement.getTrophyName().equals("twentyWins")) {
                                 playerAchievement.setAchievement(achievement);
@@ -210,15 +235,98 @@ public class MatchJpaService implements MatchService {
         if (!hasTrophy(playersAchievements, "fiftyWins")) {
             int i = 0;
             for (Match match : playerMatches) {
-                if (match.isMatchPlayed()) {
+                if (match.isMatchPlayed() && (match.getRound().getRoundNumber() != 0)) {
                     if (match.getPlayerWinner().getId().equals(player.getId()))
                         i++;
-                    if (i == 50) {
+                    if (i == 49) {
                         for (Achievement achievement : allAchievements) {
                             if (achievement.getTrophyName().equals("fiftyWins")) {
                                 playerAchievement.setAchievement(achievement);
                                 playerAchievement.setPlayer(player);
                             }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!hasTrophy(playersAchievements, "tenFriendlyW")) {
+            int i = 0;
+            for (Match match : playerMatches) {
+                // round = 0 is friendly
+                if (match.isMatchPlayed() && (match.getRound().getRoundNumber() == 0)) {
+                    if (match.getPlayerWinner().getId().equals(player.getId()))
+                        i++;
+                    if (i == 9) {
+                        for (Achievement achievement : allAchievements) {
+                            if (achievement.getTrophyName().equals("tenFriendlyW")) {
+                                playerAchievement.setAchievement(achievement);
+                                playerAchievement.setPlayer(player);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!hasTrophy(playersAchievements, "thirtyFriendlyW")) {
+            int i = 0;
+            for (Match match : playerMatches) {
+                // round = 0 is friendly
+                if (match.isMatchPlayed() && (match.getRound().getRoundNumber() == 0)) {
+                    if (match.getPlayerWinner().getId().equals(player.getId()))
+                        i++;
+                    if (i == 29) {
+                        for (Achievement achievement : allAchievements) {
+                            if (achievement.getTrophyName().equals("thirtyFriendlyW")) {
+                                playerAchievement.setAchievement(achievement);
+                                playerAchievement.setPlayer(player);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!hasTrophy(playersAchievements, "fiftyFriendlyW")) {
+            int i = 0;
+            for (Match match : playerMatches) {
+                // round = 0 is friendly
+                if (match.isMatchPlayed() && (match.getRound().getRoundNumber() == 0)) {
+                    if (match.getPlayerWinner().getId().equals(player.getId()))
+                        i++;
+                    if (i == 49) {
+                        for (Achievement achievement : allAchievements) {
+                            if (achievement.getTrophyName().equals("fiftyFriendlyW")) {
+                                playerAchievement.setAchievement(achievement);
+                                playerAchievement.setPlayer(player);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (currentMatch.getPlayerWinner().getId().equals(player.getId())) {
+            if (currentMatch.isMatchPlayed() && currentMatch.getRound().getRoundNumber() != 0) {
+                if ((currentMatch.getSetFirst().equalsIgnoreCase("6:0")
+                        && currentMatch.getSetSecond().equalsIgnoreCase("6:0"))
+                        || (currentMatch.getSetFirst().equalsIgnoreCase("0:6")
+                        && currentMatch.getSetSecond().equalsIgnoreCase("0:6"))) {
+                    for (Achievement achievement : allAchievements) {
+                        if (achievement.getTrophyName().equals("twoBagelsWin")) {
+                            playerAchievement.setAchievement(achievement);
+                            playerAchievement.setPlayer(player);
+                        }
+                    }
+                } else if ((currentMatch.getSetFirst().equalsIgnoreCase("7:6")
+                        && currentMatch.getSetSecond().equalsIgnoreCase("7:6"))
+                        || (currentMatch.getSetFirst().equalsIgnoreCase("6:7")
+                        && currentMatch.getSetSecond().equalsIgnoreCase("6:7"))) {
+                    for (Achievement achievement : allAchievements) {
+                        if (achievement.getTrophyName().equals("sevenSixWin")) {
+                            playerAchievement.setAchievement(achievement);
+                            playerAchievement.setPlayer(player);
                         }
                     }
                 }
