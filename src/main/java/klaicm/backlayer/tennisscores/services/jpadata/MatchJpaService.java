@@ -6,6 +6,7 @@ import klaicm.backlayer.tennisscores.model.Player;
 import klaicm.backlayer.tennisscores.model.PlayersAchievements;
 import klaicm.backlayer.tennisscores.repositories.MatchRepository;
 import klaicm.backlayer.tennisscores.services.MatchService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,8 @@ public class MatchJpaService implements MatchService {
     AchievementJpaService achievementJpaService;
 
     private final MatchRepository matchRepository;
+
+    final static Logger logger = Logger.getLogger(PlayerJpaService.class.getName());
 
     public MatchJpaService (MatchRepository matchRepository) { this.matchRepository = matchRepository; }
 
@@ -46,8 +49,11 @@ public class MatchJpaService implements MatchService {
     @Override
     public Match save(Match match) {
 
-        // update player i update match je
-        // playerJpaService.updatePlayer(match);
+        if (match.isMatchPlayed()) {
+            logger.info("Updating match: " + match.getId());
+        } else {
+            logger.info("Creating match: " + match.getId());
+        }
 
         Player playerWinner = playerJpaService.findById(match.getPlayerWinner().getId());
         Player playerDefeated = playerJpaService.findById(match.getPlayerDefeated().getId());

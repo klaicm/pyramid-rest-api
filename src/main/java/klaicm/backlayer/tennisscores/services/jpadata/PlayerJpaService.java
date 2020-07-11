@@ -4,6 +4,7 @@ import klaicm.backlayer.tennisscores.model.Match;
 import klaicm.backlayer.tennisscores.model.Player;
 import klaicm.backlayer.tennisscores.repositories.PlayerRepository;
 import klaicm.backlayer.tennisscores.services.PlayerService;
+import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,8 @@ import java.util.*;
 public class PlayerJpaService implements PlayerService {
 
     private final PlayerRepository playerRepository;
+
+    final static Logger logger = Logger.getLogger(PlayerJpaService.class.getName());
 
     public PlayerJpaService(PlayerRepository playerRepository) {
         this.playerRepository = playerRepository;
@@ -29,11 +32,13 @@ public class PlayerJpaService implements PlayerService {
     @Override
     public Player findById(Long id) {
         Player player = playerRepository.findById(id).orElse(null);
+        logger.info("Fetched player: " + player.getFirstName() + " "  + player.getLastName());
         return player;
     }
 
     @Override
     public Player save(Player player) {
+        logger.info("Saving player: " + player.getFirstName() + " " + player.getLastName());
         return playerRepository.save(player);
     }
 
